@@ -171,11 +171,3 @@ La interfaz mostrará el contenido utilizando una jerarquía interactiva de dos 
   * *Subcategorías (Nivel 2):*
     * **Anteojos Cat-Eye:** `[Atemporal]` Se destacan por tener marcos donde las puntas superiores exteriores son puntiagudas y se elevan hacia arriba, imitando el ojo rasgado de un gato. Tienen un aire retro muy marcado.
     * **Cinturón Western:** `[Atemporal]` Se destacan por tener hebillas metálicas grandes, llamativas y labradas, muchas veces acompañadas de una puntera de metal haciendo juego al final del cinto. Aportan una estética "vaquera" que levanta cualquier jean básico.
-
-## 4. Próximos Pasos Recomendados
-
-1. **Recopilación de Assets Gráficos:** Comenzar la búsqueda y descarga de los iconos o ilustraciones `.SVG`/`.PNG` correspondientes a cada una de las prendas detalladas en la sección 3.
-2. **Desarrollo Front-End (HTML/CSS):** Maquetar la estructura de la página, incluyendo el Top Bar, el contenedor de la imagen principal y la grilla o panel de información lateral/inferior.
-3. **Lógica de Interacción (JavaScript):**
-    * Programar el filtro del Top Bar para mostrar/ocultar elementos según las etiquetas de temporada (`Verano/Primavera`, `Invierno/Otoño`, `Atemporal`).
-    * Desarrollar el sistema interactivo de Nivel 1 y Nivel 2, garantizando que la descripción se concatene correctamente al hacer clic en las opciones.
