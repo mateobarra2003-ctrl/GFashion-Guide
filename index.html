@@ -663,9 +663,9 @@
     }
     fmRef.className = "fm-window";
     fmRef.style.setProperty("--fm-class", classId);
-    fmRef.textContent = "";
+    fmRef.innerHTML = '<img src="assets/fashion-mnist-sprite.png" alt="Muestras Fashion-MNIST de la clase ' + FMNIST_LABELS[classId] + '" width="840" height="840">';
     fmRef.setAttribute("aria-label", "Muestras Fashion-MNIST de la clase " + FMNIST_LABELS[classId]);
-    fmMeta.innerHTML = "Clase <strong>" + classId + " · " + FMNIST_LABELS[classId] + "</strong><br>15 muestras de referencia · 28×28 px";
+    fmMeta.innerHTML = "Clase <strong>" + classId + " · " + FMNIST_LABELS[classId] + "</strong><br>28×28 px · desplazá horizontalmente para ver todas las muestras";
   }
 
   const INK = "#1c1915";
