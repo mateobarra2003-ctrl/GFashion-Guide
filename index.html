@@ -134,7 +134,7 @@
       border-right: 1px solid var(--border);
     }
     .illus-wrap {
-      width: min(100%, 400px); aspect-ratio: 1;
+      width: min(100%, 520px); aspect-ratio: 1;
       background: var(--bg-elevated);
       border: 1px solid var(--border);
       border-radius: var(--radius-xl);
@@ -144,17 +144,17 @@
     }
     .illus-wrap svg { width: 100%; height: 100%; }
     .illus-compare {
-      width: min(100%, 400px);
+      width: min(100%, 760px);
       display: grid;
       grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-      gap: 10px;
+      gap: 16px;
     }
     .figure-card {
       min-width: 0;
       border: 1px solid var(--border);
       border-radius: var(--radius-lg);
       background: var(--bg-elevated);
-      padding: 12px;
+      padding: 16px;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -174,21 +174,28 @@
       width: 100%;
       border: 0;
       box-shadow: none;
-      padding: 6px;
+      padding: 4px;
       background: var(--bg);
     }
     .fm-window {
-      width: 210px;
-      height: 126px;
+      width: 100%;
+      height: 84px;
       max-width: 100%;
+      overflow-x: auto;
+      overflow-y: hidden;
       border-radius: var(--radius-md);
       border: 1px solid var(--border-strong);
-      background-color: #111;
-      background-image: url("assets/fashion-mnist-sprite.png");
-      background-repeat: no-repeat;
-      background-size: 1260px 1260px;
-      background-position: 0 calc(var(--fm-class) * -126px);
+      background: #111;
       image-rendering: pixelated;
+      scrollbar-width: thin;
+    }
+    .fm-window img {
+      display: block;
+      width: 840px;
+      height: 840px;
+      max-width: none;
+      transform: translateY(calc(var(--fm-class) * -84px));
+      transform-origin: top left;
     }
     .fm-window.empty {
       display: grid;
@@ -215,8 +222,19 @@
       color: var(--fg-subtle);
       text-align: center;
     }
+    .variants {
+      width: min(100%, 760px);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 2px;
+      padding: 12px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      background: var(--bg-elevated);
+    }
     .gallery {
-      width: min(100%, 400px);
+      width: min(100%, 760px);
       display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;
     }
     .thumb {
@@ -230,9 +248,8 @@
     .kicker { font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--accent); font-weight: 600; margin-bottom: 8px; }
     .copy h1 { font-size: var(--text-2xl); margin-bottom: 14px; }
     .desc { font-size: 1.05rem; color: var(--fg); max-width: 58ch; }
-    .variants { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 22px; }
     .chip {
-      border: 1px solid var(--border-strong);
+      border: 2px solid var(--border-strong);
       border-radius: 999px; padding: 10px 14px; min-height: 44px;
       font-size: 13px; font-weight: 500;
       transition: background var(--motion-quick) var(--ease-out), color var(--motion-quick) var(--ease-out), border-color var(--motion-quick) var(--ease-out);
@@ -254,11 +271,12 @@
     }
     body[data-fmt="phone"] .shell {
       width: var(--device-w);
-      height: var(--device-h);
-      max-height: calc(100vh - 40px);
+      height: auto;
+      min-height: calc(100vh - 40px);
+      max-height: none;
       border-radius: 36px;
       border: 10px solid #14110f;
-      overflow: hidden;
+      overflow: visible;
       background: var(--bg);
       box-shadow: 0 40px 80px -20px rgba(0,0,0,.5);
     }
@@ -271,13 +289,29 @@
     body[data-fmt="phone"] .top-controls { margin-left: 0; width: 100%; }
     body[data-fmt="phone"] .layout {
       grid-template-columns: 1fr;
-      overflow: auto;
+      overflow: visible;
     }
     body[data-fmt="phone"] .sidebar { display: none; }
     body[data-fmt="phone"] .visual {
-      border-right: 0; padding: 16px 16px 8px;
+      border-right: 0; padding: 18px 16px 8px;
     }
-    body[data-fmt="phone"] .copy { padding: 8px 16px 28px; }
+    body[data-fmt="phone"] .copy { padding: 24px 18px 40px; }
+    body[data-fmt="phone"] .illus-compare {
+      width: 100%;
+      grid-template-columns: 1fr;
+      gap: 14px;
+    }
+    body[data-fmt="phone"] .figure-card .illus-wrap {
+      width: min(100%, 320px);
+    }
+    body[data-fmt="phone"] .variants {
+      width: 100%;
+      margin-top: 0;
+      padding: 12px;
+    }
+    body[data-fmt="phone"] .gallery {
+      width: 100%;
+    }
     body[data-fmt="phone"] .copy h1 { font-size: 1.7rem; }
     body[data-fmt="phone"] .phone-cats {
       display: flex; gap: 8px; overflow-x: auto; width: 100%;
@@ -333,6 +367,7 @@
               <div class="fm-source">Datos de Zalando Research · licencia MIT</div>
             </div>
           </div>
+          <div class="variants" id="variants" aria-label="Opciones de Nivel 2"></div>
           <div class="gallery" id="gallery" aria-label="Galería de fotos reales (próximamente)">
             <div class="thumb">Foto 1 · próximamente</div>
             <div class="thumb">Foto 2 · próximamente</div>
@@ -343,8 +378,7 @@
           <div class="kicker" id="kicker">Manual de calle</div>
           <h1 id="title">Elegí una prenda</h1>
           <p class="desc" id="desc">Esta guía está pensada para principiantes absolutos: te da el nombre, la silueta y el vocabulario para reconocer prendas en la calle y conversar con alguien que sabe de moda.</p>
-          <div class="variants" id="variants"></div>
-          <p class="hint" id="hint">Tocá una variante para concatenar la descripción de la familia con el detalle de esa subcategoría.</p>
+          <p class="hint" id="hint">Elegí una opción de Nivel 2 para ver cómo se distingue dentro de la familia.</p>
         </section>
       </div>
     </div>
@@ -807,7 +841,7 @@
       const fmRef = document.getElementById("fmRef");
       const fmMeta = document.getElementById("fmMeta");
       fmRef.className = "fm-window empty";
-      fmRef.textContent = "Sin correspondencia directa en Fashion-MNIST";
+      fmRef.innerHTML = "Sin correspondencia directa en Fashion-MNIST";
       fmMeta.textContent = "";
       return;
     }
