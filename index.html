@@ -143,6 +143,78 @@
       box-shadow: 0 20px 40px -28px color-mix(in oklab, var(--fg) 40%, transparent);
     }
     .illus-wrap svg { width: 100%; height: 100%; }
+    .illus-compare {
+      width: min(100%, 400px);
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 10px;
+    }
+    .figure-card {
+      min-width: 0;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      background: var(--bg-elevated);
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+    .figure-card h3 {
+      width: 100%;
+      font-family: var(--font-body);
+      font-size: 10px;
+      line-height: 1.2;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--fg-muted);
+      text-align: center;
+    }
+    .figure-card .illus-wrap {
+      width: 100%;
+      border: 0;
+      box-shadow: none;
+      padding: 6px;
+      background: var(--bg);
+    }
+    .fm-window {
+      width: 210px;
+      height: 126px;
+      max-width: 100%;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-strong);
+      background-color: #111;
+      background-image: url("assets/fashion-mnist-sprite.png");
+      background-repeat: no-repeat;
+      background-size: 1260px 1260px;
+      background-position: 0 calc(var(--fm-class) * -126px);
+      image-rendering: pixelated;
+    }
+    .fm-window.empty {
+      display: grid;
+      place-items: center;
+      padding: 12px;
+      background: var(--bg-inset);
+      color: var(--fg-muted);
+      font-size: 11px;
+      line-height: 1.35;
+      text-align: center;
+      image-rendering: auto;
+    }
+    .fm-meta {
+      width: 100%;
+      color: var(--fg-muted);
+      font-size: 10px;
+      line-height: 1.35;
+      text-align: center;
+    }
+    .fm-meta strong { color: var(--fg); font-weight: 600; }
+    .fm-source {
+      margin-top: 2px;
+      font-size: 9px;
+      color: var(--fg-subtle);
+      text-align: center;
+    }
     .gallery {
       width: min(100%, 400px);
       display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;
@@ -249,7 +321,18 @@
       <div class="layout">
         <aside class="sidebar" id="sidebar"></aside>
         <section class="visual">
-          <div class="illus-wrap" id="illus"></div>
+          <div class="illus-compare" aria-label="Comparación de ilustración actual con referencia Fashion-MNIST">
+            <div class="figure-card">
+              <h3>Ilustración actual</h3>
+              <div class="illus-wrap" id="illus"></div>
+            </div>
+            <div class="figure-card">
+              <h3>Referencia Fashion-MNIST</h3>
+              <div class="fm-window empty" id="fmRef" role="img" aria-label="Sin correspondencia directa en Fashion-MNIST">Sin correspondencia directa en Fashion-MNIST</div>
+              <div class="fm-meta" id="fmMeta"></div>
+              <div class="fm-source">Datos de Zalando Research · licencia MIT</div>
+            </div>
+          </div>
           <div class="gallery" id="gallery" aria-label="Galería de fotos reales (próximamente)">
             <div class="thumb">Foto 1 · próximamente</div>
             <div class="thumb">Foto 2 · próximamente</div>
@@ -502,6 +585,55 @@
     return item.variants.filter(v => matchesSeason(v.season, filter));
   }
 
+  // Fashion-MNIST tiene 10 clases y no cubre todas las prendas de esta guía.
+  // Solo se muestran correspondencias directas o referencias de silueta claramente cercanas.
+  const FMNIST_LABELS = [
+    "T-shirt/top", "Trouser", "Pullover", "Dress", "Coat",
+    "Sandal", "Shirt", "Sneaker", "Bag", "Ankle boot"
+  ];
+  const FMNIST_MAP = {
+    basictee: 0, tank: 0, crop: 0,
+    oversize: 6,
+    pullover: 2, cardigan: 2,
+    puffer: 4, biker: 4, trench: 4, woolcoat: 4,
+    wideleg: 1, mom: 1, tailored: 1, cargo: 1, legging: 1,
+    slip: 3, shirtdress: 3,
+    platform: 5,
+    canvas: 7, chunky: 7,
+    combat: 9, cowboy: 9, ankle: 9,
+    tote: 8, beltbag: 8, crossbody: 8
+  };
+  const FMNIST_ITEM_MAP = {
+    tees: 0, shirts: 6, knits: 2, jackets: 4, longcoats: 4,
+    jeans: 1, trousers: 1, athleisure: 1, dresses: 3,
+    sneakers: 7, boots: 9, handbags: 8
+  };
+
+  function fashionMnistClass(item, variant) {
+    if (variant && Object.prototype.hasOwnProperty.call(FMNIST_MAP, variant.id)) return FMNIST_MAP[variant.id];
+    if (Object.prototype.hasOwnProperty.call(FMNIST_ITEM_MAP, item.id)) return FMNIST_ITEM_MAP[item.id];
+    return null;
+  }
+
+  function renderFashionMnist(item, variant) {
+    const fmRef = document.getElementById("fmRef");
+    const fmMeta = document.getElementById("fmMeta");
+    const classId = fashionMnistClass(item, variant);
+    if (classId === null) {
+      fmRef.className = "fm-window empty";
+      fmRef.style.removeProperty("--fm-class");
+      fmRef.textContent = "Sin correspondencia directa en Fashion-MNIST";
+      fmRef.setAttribute("aria-label", "Sin correspondencia directa en Fashion-MNIST");
+      fmMeta.innerHTML = "La clase no está representada en el dataset; no se fuerza una equivalencia.";
+      return;
+    }
+    fmRef.className = "fm-window";
+    fmRef.style.setProperty("--fm-class", classId);
+    fmRef.textContent = "";
+    fmRef.setAttribute("aria-label", "Muestras Fashion-MNIST de la clase " + FMNIST_LABELS[classId]);
+    fmMeta.innerHTML = "Clase <strong>" + classId + " · " + FMNIST_LABELS[classId] + "</strong><br>15 muestras de referencia · 28×28 px";
+  }
+
   const INK = "#1c1915";
   const ACC = "#8b3a2f";
   const SOFT = "#c4a196";
@@ -672,6 +804,11 @@
       title.textContent = "Nada en esta temporada";
       desc.textContent = "Probá otra temporada o la vista completa.";
       illus.innerHTML = "";
+      const fmRef = document.getElementById("fmRef");
+      const fmMeta = document.getElementById("fmMeta");
+      fmRef.className = "fm-window empty";
+      fmRef.textContent = "Sin correspondencia directa en Fashion-MNIST";
+      fmMeta.textContent = "";
       return;
     }
     selectedId = item.id;
@@ -687,6 +824,7 @@
       hint.textContent = "Elegí una variante de Nivel 2 para ver cómo se distingue dentro de la familia.";
     }
     illus.innerHTML = illustrationFor(item, v);
+    renderFashionMnist(item, v);
   }
 
   function render() {
