@@ -144,95 +144,639 @@
     }
     .illus-wrap svg { width: 100%; height: 100%; }
     .illus-compare {
-      width: min(100%, 760px);
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 16px;
+      width: min(100%, 520px);
+      display: block;
     }
     .figure-card {
       min-width: 0;
-      border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
-      background: var(--bg-elevated);
-      padding: 16px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 8px;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      padding: 0;
+      display: block;
     }
-    .figure-card h3 {
-      width: 100%;
-      font-family: var(--font-body);
-      font-size: 10px;
-      line-height: 1.2;
-      letter-spacing: .08em;
-      text-transform: uppercase;
-      color: var(--fg-muted);
-      text-align: center;
-    }
+    .figure-card h3 { display: none; }
     .figure-card .illus-wrap {
       width: 100%;
-      border: 0;
-      box-shadow: none;
-      padding: 4px;
-      background: var(--bg);
+      border: 1px solid var(--border);
+      box-shadow: 0 20px 40px -28px color-mix(in oklab, var(--fg) 40%, transparent);
+      padding: 28px;
+      background: var(--bg-elevated);
     }
-    .fm-window {
-      width: 100%;
-      height: 84px;
-      max-width: 100%;
-      overflow-x: auto;
-      overflow-y: hidden;
-      border-radius: var(--radius-md);
-      border: 1px solid var(--border-strong);
-      background: #111;
-      image-rendering: pixelated;
-      scrollbar-width: thin;
-    }
-    .fm-window img {
-      display: block;
-      width: 840px;
-      height: 840px;
-      max-width: none;
-      transform: translateY(calc(var(--fm-class) * -84px));
-      transform-origin: top left;
-    }
-    .fm-window.empty {
-      display: grid;
-      place-items: center;
-      padding: 12px;
-      background: var(--bg-inset);
-      color: var(--fg-muted);
-      font-size: 11px;
-      line-height: 1.35;
-      text-align: center;
-      image-rendering: auto;
-    }
-    .fm-meta {
-      width: 100%;
-      color: var(--fg-muted);
-      font-size: 10px;
-      line-height: 1.35;
-      text-align: center;
-    }
-    .fm-meta strong { color: var(--fg); font-weight: 600; }
-    .fm-source {
-      margin-top: 2px;
-      font-size: 9px;
-      color: var(--fg-subtle);
-      text-align: center;
-    }
-    .variants {
+    .gallery {
       width: min(100%, 760px);
-      display: flex;
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;
+    }
+    .thumb {
+      aspect-ratio: 1; border-radius: var(--radius-md);
+      border: 1px dashed var(--border-strong);
+      background: repeating-linear-gradient(-45deg, var(--bg-inset), var(--bg-inset) 6px, transparent 6px, transparent 12px);
+      display: flex; align-items: flex-end; padding: 8px;
+      color: var(--fg-subtle); font-size: 10px; letter-spacing: 0.04em; text-transform: uppercase;
+    }
+    .copy { padding: 28px 28px 40px; overflow: auto; }
+    .kicker { font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--accent); font-weight: 600; margin-bottom: 8px; }
+    .copy h1 { font-size: var(--text-2xl); margin-bottom: 14px; }
+    .desc { font-size: 1.05rem; color: var(--fg); max-width: 58ch; }
+    .chip {
+      border: 1px solid var(--border-strong);
+      border-radius: 999px; padding: 10px 14px; min-height: 44px;
+      font-size: 13px; font-weight: 500;
+      transition: background var(--motion-quick) var(--ease-out), color var(--motion-quick) var(--ease-out), border-color var(--motion-quick) var(--ease-out);
+    }
+    .chip:hover { border-color: var(--fg); }
+    .chip.active { background: var(--accent); color: #fffaf3; border-color: var(--accent); }
+    .chip .s { display: block; font-size: 10px; font-weight: 400; opacity: 0.75; }
+    .hint { margin-top: 18px; font-size: var(--text-sm); color: var(--fg-muted); }
+    .empty { color: var(--fg-muted); padding: 40px 12px; }
+
+    /* Phone format — simulated device on a studio ground */
+    body[data-fmt="phone"] {
+      background: #2a2420;
+    }
+    body[data-fmt="phone"] .stage {
+      min-height: 100%;
+      display: grid; place-items: center;
+      padding: 28px 16px;
+    }
+    body[data-fmt="phone"] .shell {
+      width: var(--device-w);
+      height: auto;
+      min-height: calc(100vh - 40px);
+      max-height: none;
+      border-radius: 36px;
+      border: 10px solid #14110f;
+      overflow: visible;
+      background: var(--bg);
+      box-shadow: 0 40px 80px -20px rgba(0,0,0,.5);
+    }
+    body[data-fmt="phone"] .topbar {
       flex-wrap: wrap;
-      gap: 10px;
-      margin-top: 2px;
+      padding: 10px 12px 12px;
+      gap: 8px;
+    }
+    body[data-fmt="phone"] .brand-sub { display: none; }
+    body[data-fmt="phone"] .top-controls { margin-left: 0; width: 100%; }
+    body[data-fmt="phone"] .layout {
+      grid-template-columns: 1fr;
+      overflow: visible;
+    }
+    body[data-fmt="phone"] .sidebar { display: none; }
+    body[data-fmt="phone"] .visual {
+      border-right: 0; padding: 18px 16px 8px;
+    }
+    body[data-fmt="phone"] .copy { padding: 24px 18px 40px; }
+    body[data-fmt="phone"] .illus-compare {
+      width: 100%;
+      grid-template-columns: 1fr;
+      gap: 14px;
+    }
+    body[data-fmt="phone"] .figure-card .illus-wrap {
+      width: min(100%, 320px);
+    }
+    body[data-fmt="phone"] .variants {
+      width: 100%;
+      margin-top: 0;
       padding: 12px;
       border: 1px solid var(--border);
       border-radius: var(--radius-lg);
       background: var(--bg-elevated);
     }
+    body[data-fmt="phone"] .chip {
+      border-width: 2px;
+    }
+    body[data-fmt="phone"] .gallery {
+      width: 100%;
+    }
+    body[data-fmt="phone"] .copy h1 { font-size: 1.7rem; }
+    body[data-fmt="phone"] .phone-cats {
+      display: flex; gap: 8px; overflow-x: auto; width: 100%;
+      padding-bottom: 4px;
+    }
+    .phone-cats { display: none; }
+    body[data-fmt="phone"] .phone-cats { display: flex; }
+    .phone-cats button {
+      flex: 0 0 auto; padding: 8px 12px; border-radius: 999px;
+      border: 1px solid var(--border); font-size: 12px; min-height: 40px;
+    }
+    .phone-cats button.active { background: var(--fg); color: var(--bg); }
+
+    @media (prefers-reduced-motion: reduce) {
+      * { transition: none !important; }
+    }
+  </style>
+</head>
+<body data-fmt="desktop">
+  <div class="stage">
+    <div class="shell">
+      <header class="topbar">
+        <div class="brand">
+          <div class="brand-mark">G<span>Fashion</span></div>
+          <div class="brand-sub">Guía básica</div>
+        </div>
+        <div class="top-controls">
+          <div class="seg" role="group" aria-label="Formato">
+            <button type="button" id="fmt-desktop" aria-pressed="true">Computadora</button>
+            <button type="button" id="fmt-phone" aria-pressed="false">Teléfono</button>
+          </div>
+          <div class="seg" role="group" aria-label="Temporada">
+            <button type="button" data-season="all" aria-pressed="true">Completa</button>
+            <button type="button" data-season="summer" aria-pressed="false">Verano / Primavera</button>
+            <button type="button" data-season="winter" aria-pressed="false">Invierno / Otoño</button>
+          </div>
+          <select class="jump" id="jump" aria-label="Ir a categoría"></select>
+        </div>
+        <div class="phone-cats" id="phoneCats"></div>
+      </header>
+      <div class="layout">
+        <aside class="sidebar" id="sidebar"></aside>
+        <section class="visual">
+          <div class="illus-compare" aria-label="Comparación de ilustración actual con referencia Fashion-MNIST">
+            <div class="figure-card">
+              <h3>Ilustración actual</h3>
+              <div class="illus-wrap" id="illus"></div>
+            </div>
+            <div class="figure-card">
+              <h3>Referencia Fashion-MNIST</h3>
+              <div class="fm-window empty" id="fmRef" role="img" aria-label="Sin correspondencia directa en Fashion-MNIST">Sin correspondencia directa en Fashion-MNIST</div>
+              <div class="fm-meta" id="fmMeta"></div>
+              <div class="fm-source">Datos de Zalando Research · licencia MIT</div>
+            </div>
+          </div>
+          <div class="variants" id="variants" aria-label="Opciones de Nivel 2"></div>
+          <div class="gallery" id="gallery" aria-label="Galería de fotos reales (próximamente)">
+            <div class="thumb">Foto 1 · próximamente</div>
+            <div class="thumb">Foto 2 · próximamente</div>
+            <div class="thumb">Foto 3 · próximamente</div>
+          </div>
+        </section>
+        <section class="copy">
+          <div class="kicker" id="kicker">Manual de calle</div>
+          <h1 id="title">Elegí una prenda</h1>
+          <p class="desc" id="desc">Esta guía está pensada para principiantes absolutos: te da el nombre, la silueta y el vocabulario para reconocer prendas en la calle y conversar con alguien que sabe de moda.</p>
+          <p class="hint" id="hint">Elegí una opción de Nivel 2 para ver cómo se distingue dentro de la familia.</p>
+        </section>
+      </div>
+    </div>
+  </div>
+  <script>
+  const GROUPS = [
+    { id: "head", title: "Accesorios de cabeza y cuello" },
+    { id: "jewels", title: "Joyería y bisutería" },
+    { id: "torso", title: "Ropa de torso" },
+    { id: "coats", title: "Abrigos" },
+    { id: "pants", title: "Pantalones" },
+    { id: "skirts", title: "Faldas y vestidos" },
+    { id: "shoes", title: "Zapatos" },
+    { id: "bags", title: "Bolsos y complementos" }
+  ];
+
+  const ITEMS = [
+    {
+      id: "hats", group: "head", name: "Gorros y Sombreros",
+      base: "accesorios diseñados para usarse sobre la cabeza. Pueden tener una función térmica (como abrigar en invierno) o estética y protectora (como cubrirse del sol)",
+      variants: [
+        { id: "beanie", name: "Gorrito de lana (Beanie)", season: "winter",
+          detail: "ser tejidos, ajustados a la forma del cráneo, cubriendo las orejas y, en muchas ocasiones, llevando un doblez en el borde o un pompón arriba." },
+        { id: "bucket", name: "Piluso (Bucket hat)", season: "atemporal",
+          detail: "tener forma de balde invertido, con un ala circular, corta e inclinada hacia abajo que da sombra a los ojos y la nuca." }
+      ]
+    },
+    {
+      id: "scarves", group: "head", name: "Bufandas y Pañuelos",
+      base: "prendas de tela o lana que se envuelven alrededor del cuello. Son el complemento de abrigo por excelencia en los meses fríos",
+      variants: [
+        { id: "maxi", name: "Bufanda manta (Maxibufanda)", season: "winter",
+          detail: "ser piezas de tela o tejido extremadamente grandes y anchas, al punto de que, desdobladas, pueden cubrir los hombros o el torso entero como un pequeño chal." }
+      ]
+    },
+    {
+      id: "necklaces", group: "jewels", name: "Collares",
+      base: "accesorios ornamentales que se llevan alrededor del cuello. Pueden ser discretos y sutiles o piezas grandes que toman el protagonismo del look",
+      variants: [
+        { id: "chain", name: "Cadenita (Fina con dije)", season: "atemporal",
+          detail: "ser hilos de metal muy delgados y sutiles que caen sobre el pecho, generalmente acompañados de un pequeño adorno colgante (dije)." },
+        { id: "choker", name: "Gargantilla (Choker)", season: "atemporal",
+          detail: "ir completamente ceñidas y ajustadas al cuello, sin colgar. Pueden ser de tela, cuero, terciopelo o eslabones de metal." }
+      ]
+    },
+    {
+      id: "earrings", group: "jewels", name: "Aritos y Aretes",
+      base: "accesorios que se llevan en las orejas. Tienen el poder de iluminar el rostro y pueden transformar un look básico en uno mucho más producido",
+      variants: [
+        { id: "hoops", name: "Argollas", season: "atemporal",
+          detail: "su forma de anillo cerrado o semi-abierto que atraviesa el lóbulo. Pueden ser finitas y pequeñas, o muy grandes y gruesas (chunky)." },
+        { id: "studs", name: "Abridores / Puntos de luz", season: "atemporal",
+          detail: "ser diminutos y quedar pegados directamente sobre el lóbulo de la oreja, habitualmente formados por una pequeña perlita, bolita de metal o piedra brillante." },
+        { id: "dangles", name: "Aros Colgantes", season: "atemporal",
+          detail: "extenderse hacia abajo, superando el lóbulo de la oreja. Suelen tener movimiento y diseños más elaborados para eventos o salidas." }
+      ]
+    },
+    {
+      id: "tees", group: "torso", name: "Remeras y Tops",
+      base: "prendas superiores ligeras y de uso casual que se llevan directamente sobre la piel, generalmente hechas de algodón o telas elásticas",
+      variants: [
+        { id: "basictee", name: "Remera Básica", season: "atemporal",
+          detail: "su corte clásico (cuello redondo o en 'V', mangas cortas) y por no tener estampados. Son el lienzo en blanco o comodín de cualquier conjunto." },
+        { id: "tank", name: "Musculosa", season: "summer",
+          detail: "no tener mangas, dejando los hombros y los brazos completamente al descubierto. Suelen tener breteles finos o gruesos." },
+        { id: "crop", name: "Top / Crop top", season: "summer",
+          detail: "ser prendas cortadas transversalmente, diseñadas intencionalmente para dejar el abdomen, el ombligo o la cintura al descubierto." }
+      ]
+    },
+    {
+      id: "shirts", group: "torso", name: "Camisas y Blusas",
+      base: "prendas superiores generalmente abotonadas en el frente, con cuello, hechas de telas menos elásticas. Aportan un aire más formal o arreglado al atuendo",
+      variants: [
+        { id: "oversize", name: "Camisa Oversize", season: "atemporal",
+          detail: "tener un corte deliberadamente grande, ancho y largo (como si fuera un talle o dos más grande de lo necesario). Da un aspecto relajado y urbano, y suele usarse desprendida con un top abajo o atada a la cintura." }
+      ]
+    },
+    {
+      id: "knits", group: "torso", name: "Sweaters y Tejidos",
+      base: "prendas de punto, cerradas o con botones, diseñadas específicamente para aportar abrigo en el torso sin necesidad de ponerse una campera pesada",
+      variants: [
+        { id: "pullover", name: "Sweater / Pullover", season: "winter",
+          detail: "ser tejidos cerrados (sin botones ni cierres) que deben pasarse obligatoriamente por la cabeza para ponérselos." },
+        { id: "cardigan", name: "Cárdigan", season: "winter",
+          detail: "ser abrigos de punto que vienen abiertos en la parte delantera, cerrándose generalmente con una hilera de botones." }
+      ]
+    },
+    {
+      id: "jackets", group: "coats", name: "Camperas",
+      base: "prendas de abrigo exteriores que suelen llegar hasta la cadera o cintura, con cierre o botones frontales. Varían muchísimo en grosor y estilo",
+      variants: [
+        { id: "puffer", name: "Campera Puffer", season: "winter",
+          detail: "estar acolchadas y divididas en costuras horizontales o geométricas, dándoles un aspecto inflado (como un plumífero). Suelen ser de tela sintética y muy abrigadas." },
+        { id: "biker", name: "Campera Biker (Motoquera)", season: "media",
+          detail: "ser generalmente de cuero o cuerina, cortas a la cintura, con cierres metálicos cruzados en el frente y solapas llamativas. Dan un look rebelde y urbano." }
+      ]
+    },
+    {
+      id: "longcoats", group: "coats", name: "Tapados y Pilotos",
+      base: "abrigos más largos que suelen sobrepasar la cadera o llegar hasta las rodillas. Dan una silueta más elegante y estructurada",
+      variants: [
+        { id: "trench", name: "Trench / Piloto", season: "media",
+          detail: "ser abrigos ligeros, de largo hasta la rodilla, cruzados en el frente con botones y que suelen llevar un cinturón de la misma tela. El color clásico es el beige o caqui." },
+        { id: "woolcoat", name: "Tapado de paño", season: "winter",
+          detail: "estar confeccionados en lana o telas gruesas y pesadas, con cortes rectos o entallados, botones grandes y solapas. Son la opción elegante por excelencia para el frío." }
+      ]
+    },
+    {
+      id: "jeans", group: "pants", name: "Jeans (Denim)",
+      base: "pantalones fabricados en tela de mezclilla (denim). Son rígidos o semi-elásticos, muy duraderos y el pilar fundamental del estilo urbano cotidiano en Argentina",
+      variants: [
+        { id: "wideleg", name: "Jean Wide Leg", season: "atemporal",
+          detail: "tener piernas muy anchas que caen rectas desde la cadera (o cintura alta) hasta el suelo, sin ajustarse en ningún punto. Son la tendencia más fuerte de la moda urbana reciente." },
+        { id: "mom", name: "Jean Mom", season: "atemporal",
+          detail: "ser de tiro alto (llegan al ombligo o más arriba), más sueltos en la zona de las caderas y muslos, y afinarse ligeramente hacia los tobillos. Tienen un aire retro de los años 90." }
+      ]
+    },
+    {
+      id: "trousers", group: "pants", name: "Pantalones de Tela",
+      base: "pantalones confeccionados en telas distintas al jean (como lino, gabardina o algodón liviano). Pueden verse muy formales (para la oficina) o totalmente informales",
+      variants: [
+        { id: "tailored", name: "Pantalón Sastrero", season: "atemporal",
+          detail: "su corte formal tipo traje, generalmente con pinzas en la cintura y caída recta. Hoy en día son clave en la calle, usados de forma informal con zapatillas." },
+        { id: "cargo", name: "Pantalón Cargo", season: "atemporal",
+          detail: "tener múltiples bolsillos grandes y cuadrados, cosidos con solapa en los laterales exteriores de las piernas. Dan un look utilitario muy relajado." }
+      ]
+    },
+    {
+      id: "athleisure", group: "pants", name: "Pantalones Deportivos / Confort",
+      base: "pantalones diseñados priorizando la máxima comodidad y elasticidad. Nacieron para el gimnasio pero hoy son clave en la calle",
+      variants: [
+        { id: "legging", name: "Calza (Legging)", season: "atemporal",
+          detail: "ser pantalones completamente elásticos que van totalmente ceñidos y apretados a las piernas desde la cintura hasta los tobillos, calcando la forma del cuerpo." }
+      ]
+    },
+    {
+      id: "skirts", group: "skirts", name: "Faldas",
+      base: "prendas de vestir que cuelgan de la cintura hacia abajo sin división para las piernas, variando drásticamente en su largo (desde la mitad del muslo hasta los tobillos)",
+      variants: [
+        { id: "midi", name: "Falda Midi", season: "atemporal",
+          detail: "su longitud específica: terminan a mitad de la pantorrilla, entre la rodilla y el tobillo. Pueden ser ajustadas o sueltas, y dan un aire sofisticado." },
+        { id: "mini", name: "Minifalda (Tabla o Jean)", season: "summer",
+          detail: "ser muy cortas, terminando a mitad del muslo. Las de tablas (estilo colegial) y las de jean rígido son las más populares." }
+      ]
+    },
+    {
+      id: "dresses", group: "skirts", name: "Vestidos",
+      base: "una prenda de una sola pieza que cubre desde el torso hasta las piernas. Simplifican el armado de un conjunto al ofrecer un look completo de manera instantánea",
+      variants: [
+        { id: "slip", name: "Vestido Lencero (Slip Dress)", season: "summer",
+          detail: "estar hechos de telas sedosas, ligeras y con caída fluida, colgados de breteles muy finos (espagueti). Imitan la estética de la lencería elegante." },
+        { id: "shirtdress", name: "Vestido Camisero", season: "summer",
+          detail: "estar diseñados como una camisa de botones tradicional (con cuello y mangas), pero lo suficientemente larga como para usarse como vestido. Suelen llevar un lazo en la cintura." }
+      ]
+    },
+    {
+      id: "heels", group: "shoes", name: "Zapatos de Taco",
+      base: "calzado que eleva el talón respecto a la punta del pie, diseñado tradicionalmente para estilizar la pierna o para eventos formales",
+      variants: [
+        { id: "stiletto", name: "Stilettos", season: "atemporal",
+          detail: "tener un taco aguja (muy fino y generalmente alto) y una punta estrecha. Son el clásico zapato de fiesta elegante." },
+        { id: "block", name: "Taco Cuadrado (Bloque)", season: "atemporal",
+          detail: "tener un taco grueso y recto, lo que los hace mucho más estables, cómodos y de uso más informal." },
+        { id: "platform", name: "Sandalias de plataforma", season: "summer",
+          detail: "sumar altura en un calzado abierto, ya sea con una suela alta y pareja, o combinando un taco grueso con plataforma en la parte delantera." }
+      ]
+    },
+    {
+      id: "sneakers", group: "shoes", name: "Zapatillas (Sneakers)",
+      base: "calzado originalmente deportivo o informal que hoy es la base del uso diario urbano por su comodidad",
+      variants: [
+        { id: "canvas", name: "Urbanas (Lonas)", season: "atemporal",
+          detail: "ser chatas, ligeras y de materiales como lona o cuero fino (ej. Converse, Vans). No tienen estética de gimnasio." },
+        { id: "chunky", name: "Chunkys / Running", season: "atemporal",
+          detail: "tener suelas exageradamente grandes y gruesas, o diseños deportivos técnicos (con mallas respirables o burbujas de aire)." }
+      ]
+    },
+    {
+      id: "boots", group: "shoes", name: "Botas",
+      base: "calzado cerrado de media estación o invierno que cubre el pie y se extiende por encima del tobillo o hasta la rodilla",
+      variants: [
+        { id: "combat", name: "Borcegos", season: "winter",
+          detail: "ser botas acordonadas de cuero grueso con suelas de goma pesadas (estilo militar o de trabajo). Muy populares para uso diario." },
+        { id: "cowboy", name: "Tejanas (Cowboy)", season: "winter",
+          detail: "tener un corte en V en la parte superior, costuras decorativas, punta afilada y un taco levemente inclinado hacia adentro." },
+        { id: "ankle", name: "Botinetas", season: "winter",
+          detail: "ser botas cortas que llegan justo al nivel del tobillo, muchas veces ajustadas y con un pequeño taco fino o cuadrado." }
+      ]
+    },
+    {
+      id: "flats", group: "shoes", name: "Zapatos Planos (Flats)",
+      base: "calzado cerrado, formal o semi-formal, que no presenta elevación en el talón",
+      variants: [
+        { id: "loafer", name: "Mocasines", season: "atemporal",
+          detail: "ser zapatos cerrados sin cordones. Actualmente en Argentina es tendencia usarlos con suela gruesa (chunky) y medias blancas a la vista." },
+        { id: "ballet", name: "Chatitas (Ballerinas)", season: "atemporal",
+          detail: "ser ultra planas y tener un escote amplio y redondeado en la parte superior, dejando el empeine al descubierto." }
+      ]
+    },
+    {
+      id: "handbags", group: "bags", name: "Carteras y Bolsos",
+      base: "accesorios funcionales diseñados para transportar objetos personales. Su tamaño y forma cambian drásticamente el estilo general del atuendo",
+      variants: [
+        { id: "tote", name: "Tote Bag", season: "atemporal",
+          detail: "ser bolsos grandes, abiertos en la parte superior (muchas veces sin cierre), con dos manijas paralelas largas para colgar del hombro. Suelen ser de lona o ecocuero y son ideales para cargar muchas cosas en el día a día." },
+        { id: "beltbag", name: "Riñonera", season: "atemporal",
+          detail: "ser bolsos pequeños unidos a un cinturón ajustable. Aunque originalmente iban en la cintura, la tendencia actual urbana es usarlas cruzadas sobre el pecho o la espalda." },
+        { id: "crossbody", name: "Bandolera", season: "atemporal",
+          detail: "tener una correa larga diseñada específicamente para cruzarse sobre el torso, apoyando el bolso en la cadera contraria. Permiten tener las manos totalmente libres." }
+      ]
+    },
+    {
+      id: "extras", group: "bags", name: "Complementos",
+      base: "accesorios adicionales que suman un detalle de estilo y funcionalidad, sirviendo muchas veces para cerrar visualmente un look",
+      variants: [
+        { id: "cateye", name: "Anteojos Cat-Eye", season: "atemporal",
+          detail: "tener marcos donde las puntas superiores exteriores son puntiagudas y se elevan hacia arriba, imitando el ojo rasgado de un gato. Tienen un aire retro muy marcado." },
+        { id: "western", name: "Cinturón Western", season: "atemporal",
+          detail: "tener hebillas metálicas grandes, llamativas y labradas, muchas veces acompañadas de una puntera de metal haciendo juego al final del cinto. Aportan una estética vaquera que levanta cualquier jean básico." }
+      ]
+    }
+  ];
+
+  const SEASON_LABEL = {
+    winter: "Invierno / Otoño",
+    summer: "Verano / Primavera",
+    atemporal: "Atemporal",
+    media: "Atemporal / Media estación"
+  };
+
+  function matchesSeason(tag, filter) {
+    if (filter === "all") return true;
+    if (tag === "atemporal" || tag === "media") return true;
+    return tag === filter;
+  }
+
+  function visibleVariants(item, filter) {
+    return item.variants.filter(v => matchesSeason(v.season, filter));
+  }
+
+  // Fashion-MNIST tiene 10 clases y no cubre todas las prendas de esta guía.
+  // Solo se muestran correspondencias directas o referencias de silueta claramente cercanas.
+  const INK = "#1c1915";
+  const ACC = "#8b3a2f";
+  const SOFT = "#c4a196";
+  const FILL = "#f4efe6";
+
+  function svg(inner) {
+    return `<svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">${inner}</svg>`;
+  }
+
+  const ILLUSTRATIONS = {
+    hats: () => svg(`<ellipse cx="100" cy="118" rx="46" ry="40" fill="${SOFT}"/><path d="M54 118c0-34 20-62 46-62s46 28 46 62" stroke="${INK}" stroke-width="3"/><rect x="58" y="108" width="84" height="16" rx="8" fill="${ACC}"/>`),
+    beanie: () => svg(`<path d="M58 122c0-36 18-64 42-64s42 28 42 64" fill="${SOFT}" stroke="${INK}" stroke-width="3"/><rect x="54" y="114" width="92" height="22" rx="8" fill="${ACC}"/><circle cx="100" cy="52" r="10" fill="${ACC}" stroke="${INK}" stroke-width="2"/>`),
+    bucket: () => svg(`<path d="M62 96h76l10 28H52l10-28Z" fill="${SOFT}" stroke="${INK}" stroke-width="3"/><path d="M70 96c4-22 14-34 30-34s26 12 30 34" fill="${ACC}" stroke="${INK}" stroke-width="3"/><ellipse cx="100" cy="128" rx="58" ry="10" stroke="${INK}" stroke-width="3"/>`),
+    scarves: () => svg(`<path d="M70 48c30 8 40 8 70 0-8 28-8 40 0 78-30-10-42-10-70 0 8-28 8-42 0-78Z" fill="${SOFT}" stroke="${INK}" stroke-width="3"/><path d="M84 126c8 22 4 40-8 54M116 126c-4 24 6 40 18 54" stroke="${ACC}" stroke-width="8" stroke-linecap="round"/>`),
+    maxi: () => svg(`<path d="M48 44c40 14 64 14 104 0v28c-20 8-36 10-52 10S68 80 48 72V44Z" fill="${SOFT}" stroke="${INK}" stroke-width="3"/><path d="M58 72c8 40 4 62-10 84M142 72c-8 40-4 62 10 84" stroke="${ACC}" stroke-width="10" stroke-linecap="round"/>`),
+    necklaces: () => svg(`<path d="M55 58c20 48 70 48 90 0" stroke="${INK}" stroke-width="3" fill="none"/><circle cx="100" cy="118" r="10" fill="${ACC}" stroke="${INK}" stroke-width="2"/><path d="M100 108v10" stroke="${INK}" stroke-width="2"/>`),
+    chain: () => svg(`<path d="M50 60c22 52 78 52 100 0" stroke="${INK}" stroke-width="2"/><path d="M100 112l-6 16h12l-6-16Z" fill="${ACC}" stroke="${INK}" stroke-width="2"/>`),
+    choker: () => svg(`<rect x="58" y="78" width="84" height="14" rx="7" fill="${ACC}" stroke="${INK}" stroke-width="2"/><circle cx="142" cy="85" r="5" fill="${INK}"/><ellipse cx="100" cy="130" rx="36" ry="28" stroke="${SOFT}" stroke-width="3"/>`),
+    earrings: () => svg(`<circle cx="78" cy="70" r="18" stroke="${INK}" stroke-width="3"/><circle cx="122" cy="70" r="18" stroke="${INK}" stroke-width="3"/><circle cx="78" cy="70" r="4" fill="${ACC}"/><circle cx="122" cy="70" r="4" fill="${ACC}"/>`),
+    hoops: () => svg(`<circle cx="100" cy="100" r="42" stroke="${ACC}" stroke-width="8"/><circle cx="100" cy="58" r="5" fill="${INK}"/>`),
+    studs: () => svg(`<circle cx="78" cy="100" r="10" fill="${SOFT}" stroke="${INK}" stroke-width="2"/><circle cx="122" cy="100" r="10" fill="${SOFT}" stroke="${INK}" stroke-width="2"/><circle cx="78" cy="100" r="3" fill="${ACC}"/><circle cx="122" cy="100" r="3" fill="${ACC}"/>`),
+    dangles: () => svg(`<circle cx="100" cy="52" r="6" fill="${INK}"/><path d="M100 58v28" stroke="${INK}" stroke-width="2"/><path d="M100 86l-16 40h32L100 86Z" fill="${ACC}" stroke="${INK}" stroke-width="2"/>`),
+    tees: () => svg(`<path d="M58 70l22-16h40l22 16 16 14-16 8v60H58V92L42 84l16-14Z" fill="${SOFT}" stroke="${INK}" stroke-width="3"/>`),
+    basictee: () => svg(`<path d="M58 72l22-16h40l22 16 16 12-16 8v62H58V92L42 84l16-12Z" fill="${FILL}" stroke="${INK}" stroke-width="3"/><path d="M84 58c4 12 28 12 32 0" stroke="${INK}" stroke-width="2"/>`),
+    tank: () => svg(`<path d="M72 58h12c4 16 28 16 32 0h12v18l18 10v70H54V86l18-10V58Z" fill="${SOFT}" stroke="${INK}" stroke-width="3"/>`),
+    crop: () => svg(`<path d="M58 78l22-16h40l22 16 16 12-16 8v36H58V94L42 86l16-8Z" fill="${ACC}" stroke="${INK}" stroke-width="3"/>`),
+    shirts: () => svg(`<path d="M50 70l28-20 22 16 22-16 28 20v86H50V70Z" fill="${FILL}" stroke="${INK}" stroke-width="3"/><path d="M100 66v90M78 70l22-12 22 12" stroke="${INK}" stroke-width="2"/>`),
+    oversize: () => svg(`<path d="M38 74l32-18 30 18 30-18 32 18v82H38V74Z" fill="${SOFT}" stroke="${INK}" stroke-width="3"/><path d="M100 74v82" stroke="${INK}" stroke-width="2"/><circle cx="110" cy="108" r="3" fill="${INK}"/><circle cx="110" cy="128" r="3" fill="${INK}"/>`),
+    knits: () => svg(`<path d="M56 78l22-18h44l22 18 14 10-14 8v68H56V98L42 90l14-12Z" fill="${SOFT}" stroke="${INK}" stroke-width="3"/><path d="M70 100h60M70 118h60M70 136h60" stroke="${ACC}" stroke-width="2"/>`),
+    pullover: () => svg(`<path d="M56 80l22-20h44l22 20 14 10-14 8v68H56V100L42 92l14-12Z" fill="${ACC}" stroke="${INK}" stroke-width="3"/><path d="M82 62c6 14 30 14 36 0" stroke="${INK}" stroke-width="2"/>`),
+    cardigan: () => svg(`<path d="M50 78l24-18 26 20 26-20 24 18v88H50V78Z" fill="${SOFT}" stroke="${INK}" stroke-width="3"/><path d="M100 80v86" stroke="${INK}" stroke-width="2"/><circle cx="90" cy="108" r="3.5" fill="${INK}"/><circle cx="90" cy="128" r="3.5" fill="${INK}"/>`),
+    jackets: () => svg(`<path d="M48 70l30-18 22 14 22-14 30 18v86H48V70Z" fill="${SOFT}" stroke="${INK}" stroke-width="3"/><path d="M100 66v90" stroke="${INK}" stroke-width="2"/>`),
+    puffer: () => svg(`<path d="M52 72l26-16 22 12 22-12 26 16v84H52V72Z" fill="${SOFT}" stroke="${INK}" stroke-width="3"/><path d="M56 96h88M56 114h88M56 132h88" stroke="${INK}" stroke-width="2"/>`),
+    biker: () => svg(`<path d="M50 78l28-16 22 10 22-10 28 16-10 18v66H60V96L50 78Z" fill="${INK}"/><path d="M70 96l40 14 40-14" stroke="${ACC}" stroke-width="3"/><path d="M100 110v56" stroke="${ACC}" stroke-width="2"/>`),
+    longcoats: () => svg(`<path d="M58 56l22-14 20 12 20-12 22 14v110H58V56Z" fill="${SOFT}" stroke="${INK}" stroke-width="3"/><path d="M100 54v112" stroke="${INK}" stroke-width="2"/>`),
+    trench: () => svg(`<path d="M56 54l24-14 20 12 20-12 24 14v116H56V54Z" fill="${FILL}" stroke="${INK}" stroke-width="3"/><rect x="70" y="108" width="60" height="10" fill="${ACC}"/><path d="M100 52v116" stroke="${INK}" stroke-width="2"/>`),
+    woolcoat: () => svg(`<path d="M54 52l24-12 22 12 22-12 24 12v120H54V52Z" fill="${ACC}" stroke="${INK}" stroke-width="3"/><path d="M100 52v120" stroke="${INK}" stroke-width="2"/><circle cx="88" cy="100" r="4" fill="${FILL}"/><circle cx="88" cy="120" r="4" fill="${FILL}"/>`),
+    jeans: () => svg(`<path d="M72 48h56l10 20-8 96H110L100 78 90 164H70L62 68 72 48Z" fill="#4a5c72" stroke="${INK}" stroke-width="3"/>`),
+    wideleg: () => svg(`<path d="M70 46h60l8 18-6 100H112L100 78 88 164H64L62 64 70 46Z" fill="#4a5c72" stroke="${INK}" stroke-width="3"/><path d="M84 164h-14M130 164h-16" stroke="${INK}" stroke-width="2"/>`),
+    mom: () => svg(`<path d="M74 46h52l8 22-16 96H108L100 86 92 164H82L66 68 74 46Z" fill="#3d4d60" stroke="${INK}" stroke-width="3"/>`),
+    trousers: () => svg(`<path d="M74 48h52l6 16-8 100H110L100 80 90 164H76L68 64 74 48Z" fill="${SOFT}" stroke="${INK}" stroke-width="3"/><path d="M100 64v16" stroke="${INK}" stroke-width="2"/>`),
+    tailored: () => svg(`<path d="M76 46h48l6 16-8 102H108L100 78 92 164H78L70 62 76 46Z" fill="${FILL}" stroke="${INK}" stroke-width="3"/><path d="M88 70l12 8 12-8" stroke="${INK}" stroke-width="2"/>`),
+    cargo: () => svg(`<path d="M74 48h52l6 16-8 100H110L100 80 90 164H76L68 64 74 48Z" fill="${SOFT}" stroke="${INK}" stroke-width="3"/><rect x="60" y="100" width="22" height="28" rx="3" stroke="${INK}" stroke-width="2" fill="${ACC}"/><rect x="118" y="100" width="22" height="28" rx="3" stroke="${INK}" stroke-width="2" fill="${ACC}"/>`),
+    athleisure: () => svg(`<path d="M78 48h44l4 14-10 102H108L100 82 92 164H84L74 62 78 48Z" fill="${ACC}" stroke="${INK}" stroke-width="3"/>`),
+    legging: () => svg(`<path d="M80 46h40l4 12-12 106H108L100 80 92 164H84L76 58 80 46Z" fill="${INK}"/>`),
+    skirts: () => svg(`<path d="M78 52h44l28 96H50L78 52Z" fill="${SOFT}" stroke="${INK}" stroke-width="3"/><path d="M78 52h44" stroke="${INK}" stroke-width="3"/>`),
+    midi: () => svg(`<path d="M80 44h40l32 112H48L80 44Z" fill="${ACC}" stroke="${INK}" stroke-width="3"/>`),
+    mini: () => svg(`<path d="M76 60h48l18 52H58L76 60Z" fill="${SOFT}" stroke="${INK}" stroke-width="3"/><path d="M70 84h60M66 100h68" stroke="${INK}" stroke-width="2"/>`),
+    dresses: () => svg(`<path d="M86 40h28l6 28 24 8-16 84H72L56 76l24-8 6-28Z" fill="${SOFT}" stroke="${INK}" stroke-width="3"/>`),
+    slip: () => svg(`<path d="M82 36h8v22h20V36h8L130 78 112 168H88L70 78 82 36Z" fill="${ACC}" stroke="${INK}" stroke-width="3"/>`),
+    shirtdress: () => svg(`<path d="M58 56l24-16 18 12 18-12 24 16-8 22 12 90H54l12-90-8-22Z" fill="${FILL}" stroke="${INK}" stroke-width="3"/><path d="M100 52v126" stroke="${INK}" stroke-width="2"/><path d="M78 108h44" stroke="${ACC}" stroke-width="6"/>`),
+    heels: () => svg(`<path d="M46 108c28-8 48-28 70-28 10 0 18 6 22 16l16 4-6 14H58l-12-6Z" fill="${SOFT}" stroke="${INK}" stroke-width="3"/><path d="M138 110v28" stroke="${INK}" stroke-width="4"/>`),
+    stiletto: () => svg(`<path d="M40 112c32-10 58-34 82-34 8 0 16 8 18 16l20 4-4 12H54Z" fill="${ACC}" stroke="${INK}" stroke-width="3"/><path d="M148 110l6 34" stroke="${INK}" stroke-width="3"/>`),
+    block: () => svg(`<path d="M42 110c28-8 50-28 74-28 10 0 18 8 22 16l18 4v12H56Z" fill="${SOFT}" stroke="${INK}" stroke-width="3"/><rect x="132" y="114" width="16" height="30" fill="${INK}"/>`),
+    platform: () => svg(`<path d="M40 108c26-4 50-20 74-20 14 0 28 12 32 24H44Z" fill="${FILL}" stroke="${INK}" stroke-width="3"/><path d="M44 112h102v16H52Z" fill="${ACC}"/><rect x="130" y="112" width="16" height="28" fill="${INK}"/>`),
+    sneakers: () => svg(`<path d="M40 118c24-24 50-32 86-18 12 4 28 8 34 18v16H48l-8-16Z" fill="${FILL}" stroke="${INK}" stroke-width="3"/><path d="M48 134h112" stroke="${ACC}" stroke-width="6"/>`),
+    canvas: () => svg(`<path d="M42 120c22-20 48-28 82-16 14 4 28 8 34 16v14H50Z" fill="${SOFT}" stroke="${INK}" stroke-width="3"/><path d="M70 112l20-8 18 6" stroke="${INK}" stroke-width="2"/>`),
+    chunky: () => svg(`<path d="M38 112c24-18 50-24 84-10 16 6 30 8 40 16v10H46Z" fill="${SOFT}" stroke="${INK}" stroke-width="3"/><path d="M40 128h122v18H46Z" fill="${ACC}" stroke="${INK}" stroke-width="2"/>`),
+    boots: () => svg(`<path d="M78 40h40v70l28 18v28H70V128l8-18V40Z" fill="${SOFT}" stroke="${INK}" stroke-width="3"/>`),
+    combat: () => svg(`<path d="M80 38h36v68l30 22v28H70V126l10-20V38Z" fill="${INK}"/><path d="M88 58h20M88 74h20M88 90h20" stroke="${SOFT}" stroke-width="2"/>`),
+    cowboy: () => svg(`<path d="M70 42c10 18 50 18 60 0v70l36 16-8 28H78l-8-20 8-24V42Z" fill="${ACC}" stroke="${INK}" stroke-width="3"/><path d="M100 42v70" stroke="${INK}" stroke-width="2"/>`),
+    ankle: () => svg(`<path d="M78 70h40v40l24 12v22H70V118l8-12V70Z" fill="${SOFT}" stroke="${INK}" stroke-width="3"/><rect x="128" y="122" width="10" height="22" fill="${INK}"/>`),
+    flats: () => svg(`<path d="M40 118c28-16 56-22 88-8 10 4 24 8 32 8v16H48Z" fill="${SOFT}" stroke="${INK}" stroke-width="3"/>`),
+    loafer: () => svg(`<path d="M40 116c26-14 54-20 86-8 12 4 26 8 34 10v16H48Z" fill="${INK}"/><path d="M78 112c10 10 28 10 40 0" stroke="${SOFT}" stroke-width="3"/>`),
+    ballet: () => svg(`<ellipse cx="108" cy="124" rx="56" ry="22" fill="${SOFT}" stroke="${INK}" stroke-width="3"/><path d="M70 118c16-16 40-16 56 0" stroke="${ACC}" stroke-width="3"/>`),
+    handbags: () => svg(`<rect x="58" y="78" width="84" height="70" rx="8" fill="${SOFT}" stroke="${INK}" stroke-width="3"/><path d="M78 78c0-22 44-22 44 0" stroke="${INK}" stroke-width="3"/>`),
+    tote: () => svg(`<path d="M58 86h84l-8 70H66L58 86Z" fill="${FILL}" stroke="${INK}" stroke-width="3"/><path d="M76 86c0-28 48-28 48 0" stroke="${INK}" stroke-width="3"/>`),
+    beltbag: () => svg(`<rect x="64" y="88" width="72" height="40" rx="12" fill="${ACC}" stroke="${INK}" stroke-width="3"/><path d="M40 100h24M136 100h24" stroke="${INK}" stroke-width="4"/>`),
+    crossbody: () => svg(`<rect x="86" y="96" width="52" height="44" rx="6" fill="${SOFT}" stroke="${INK}" stroke-width="3"/><path d="M86 104C50 40 40 36 36 48" stroke="${INK}" stroke-width="3"/>`),
+    extras: () => svg(`<path d="M46 100c18-22 36-22 54 0 18-22 36-22 54 0" stroke="${INK}" stroke-width="4"/><path d="M46 100c8 10 20 10 28 0M126 100c8 10 20 10 28 0" stroke="${ACC}" stroke-width="3"/>`),
+    cateye: () => svg(`<path d="M30 108c22-28 50-24 66-4 16-20 44-24 74 4-24-4-40 8-70 8S52 104 30 108Z" fill="${SOFT}" stroke="${INK}" stroke-width="3"/><circle cx="72" cy="104" r="14" stroke="${INK}" stroke-width="2"/><circle cx="132" cy="104" r="14" stroke="${INK}" stroke-width="2"/>`),
+    western: () => svg(`<rect x="28" y="92" width="144" height="16" rx="4" fill="${SOFT}" stroke="${INK}" stroke-width="2"/><rect x="86" y="78" width="28" height="44" rx="4" fill="${ACC}" stroke="${INK}" stroke-width="2"/>`)
+  };
+
+  function illustrationFor(item, variant) {
+    const key = (variant && ILLUSTRATIONS[variant.id]) ? variant.id : item.id;
+    const fn = ILLUSTRATIONS[key] || ILLUSTRATIONS[item.id] || ILLUSTRATIONS.tees;
+    return fn();
+  }
+
+  let format = "desktop";
+  let season = "all";
+  let selectedId = ITEMS[0].id;
+  let variantId = null;
+
+  const sidebar = document.getElementById("sidebar");
+  const jump = document.getElementById("jump");
+  const phoneCats = document.getElementById("phoneCats");
+  const illus = document.getElementById("illus");
+  const title = document.getElementById("title");
+  const desc = document.getElementById("desc");
+  const kicker = document.getElementById("kicker");
+  const variantsEl = document.getElementById("variants");
+  const hint = document.getElementById("hint");
+
+  function filteredItems() {
+    return ITEMS.filter(item => visibleVariants(item, season).length > 0);
+  }
+
+  function currentItem() {
+    return filteredItems().find(i => i.id === selectedId) || filteredItems()[0];
+  }
+
+  function renderNav() {
+    const items = filteredItems();
+    sidebar.innerHTML = "";
+    jump.innerHTML = "";
+    phoneCats.innerHTML = "";
+    GROUPS.forEach(g => {
+      const groupItems = items.filter(i => i.group === g.id);
+      if (!groupItems.length) return;
+      const lab = document.createElement("div");
+      lab.className = "group-label";
+      lab.textContent = g.title;
+      sidebar.appendChild(lab);
+      groupItems.forEach(item => {
+        const b = document.createElement("button");
+        b.className = "cat-btn" + (item.id === selectedId ? " active" : "");
+        b.type = "button";
+        b.innerHTML = `<span>${item.name}</span><span class="n">${visibleVariants(item, season).length}</span>`;
+        b.addEventListener("click", () => selectItem(item.id));
+        sidebar.appendChild(b);
+        const opt = document.createElement("option");
+        opt.value = item.id;
+        opt.textContent = item.name;
+        if (item.id === selectedId) opt.selected = true;
+        jump.appendChild(opt);
+        const pb = document.createElement("button");
+        pb.type = "button";
+        pb.textContent = item.name;
+        pb.className = item.id === selectedId ? "active" : "";
+        pb.addEventListener("click", () => selectItem(item.id));
+        phoneCats.appendChild(pb);
+      });
+    });
+  }
+
+  function selectItem(id) {
+    selectedId = id;
+    variantId = null;
+    render();
+  }
+
+  function selectVariant(id) {
+    variantId = variantId === id ? null : id;
+    renderDetail();
+    renderVariants();
+  }
+
+  function renderVariants() {
+    const item = currentItem();
+    if (!item) return;
+    const vs = visibleVariants(item, season);
+    variantsEl.innerHTML = "";
+    vs.forEach(v => {
+      const b = document.createElement("button");
+      b.className = "chip" + (variantId === v.id ? " active" : "");
+      b.type = "button";
+      b.innerHTML = `${v.name}<span class="s">${SEASON_LABEL[v.season]}</span>`;
+      b.addEventListener("click", () => selectVariant(v.id));
+      variantsEl.appendChild(b);
+    });
+  }
+
+  function renderDetail() {
+    const item = currentItem();
+    if (!item) {
+      title.textContent = "Nada en esta temporada";
+      desc.textContent = "Probá otra temporada o la vista completa.";
+      illus.innerHTML = "";
+      const fmRef = document.getElementById("fmRef");
+      const fmMeta = document.getElementById("fmMeta");
+      fmRef.className = "fm-window empty";
+      fmRef.innerHTML = "Sin correspondencia directa en Fashion-MNIST";
+      fmMeta.textContent = "";
+      return;
+    }
+    selectedId = item.id;
+    const v = item.variants.find(x => x.id === variantId && matchesSeason(x.season, season));
+    const group = GROUPS.find(g => g.id === item.group);
+    kicker.textContent = group ? group.title : "Guía";
+    title.textContent = v ? v.name : item.name;
+    if (v) {
+      desc.textContent = `Los ${item.name} se caracterizan por ${item.base}. Por su parte, los tipo ${v.name} se destacan dentro del grupo por ${v.detail}`;
+      hint.textContent = "Volvé a tocar la variante para ver solo la familia.";
+    } else {
+      desc.textContent = `Los ${item.name} se caracterizan por ${item.base}.`;
+      hint.textContent = "Elegí una variante de Nivel 2 para ver cómo se distingue dentro de la familia.";
+    }
+    illus.innerHTML = illustrationFor(item, v);
+  }
+
+  function render() {
+    renderNav();
+    renderVariants();
+    renderDetail();
+  }
+
+  document.getElementById("fmt-desktop").addEventListener("click", () => setFormat("desktop"));
+  document.getElementById("fmt-phone").addEventListener("click", () => setFormat("phone"));
+  function setFormat(f) {
+    format = f;
+    document.body.dataset.fmt = f;
+    document.getElementById("fmt-desktop").setAttribute("aria-pressed", String(f === "desktop"));
+    document.getElementById("fmt-phone").setAttribute("aria-pressed", String(f === "phone"));
+  }
+  document.querySelectorAll("[data-season]").forEach(btn => {
+    btn.addEventListener("click", () => {
+      season = btn.getAttribute("data-season");
+      document.querySelectorAll("[data-season]").forEach(b => b.setAttribute("aria-pressed", String(b === btn)));
+      variantId = null;
+      render();
+    });
+  });
+  jump.addEventListener("change", () => selectItem(jump.value));
+
+  render();
+  </script>
+</body>
+</html>    .variants { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 22px; }
     .gallery {
       width: min(100%, 760px);
       display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;
